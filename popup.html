@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Inspector</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Image Inspector</h1>
+      <p class="subtitle">Analyze images on this page</p>
+    </header>
+    
+    <div class="button-container">
+      <button id="showDetailsBtn" class="primary-btn">
+        <span class="btn-icon">🔍</span>
+        Show Image Details
+      </button>
+    </div>
+    
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <p>Scanning page for images...</p>
+    </div>
+    
+    <div id="error" class="error hidden"></div>
+    
+    <div id="results" class="results hidden">
+      <div class="results-header">
+        <h2>Found <span id="imageCount">0</span> image(s)</h2>
+      </div>
+      <div class="table-container">
+        <table id="imageTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Preview</th>
+              <th>Source</th>
+              <th>Format</th>
+              <th>Dimensions</th>
+              <th>Size</th>
+            </tr>
+          </thead>
+          <tbody id="imageTableBody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div id="noImages" class="no-images hidden">
+      <p>No images found on this page.</p>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
