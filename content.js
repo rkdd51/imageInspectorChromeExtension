@@ -166,7 +166,10 @@ async function getImageDetails() {
     return areaB - areaA;
   });
 
-  return { images: images };
+  return { 
+    images: images,
+    pageUrl: window.location.href
+  };
 }
 
 function loadImageData(src) {

@@ -6,6 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const noImages = document.getElementById('noImages');
   const imageTableBody = document.getElementById('imageTableBody');
   const imageCount = document.getElementById('imageCount');
+  const pageUrl = document.getElementById('pageUrl');
+  const copyBtn = document.getElementById('copyBtn');
+  
+  let currentImageData = null; // Store current image data for copying
+  let currentPageUrl = null; // Store current page URL for copying
 
   showDetailsBtn.addEventListener('click', async () => {
     try {
@@ -71,6 +76,16 @@ document.addEventListener('DOMContentLoaded', () => {
         noImages.classList.remove('hidden');
         return;
       }
+
+      // Display page URL
+      if (imageDetails.pageUrl) {
+        currentPageUrl = imageDetails.pageUrl;
+        pageUrl.textContent = imageDetails.pageUrl;
+        pageUrl.parentElement.title = imageDetails.pageUrl;
+      }
+
+      // Store image data for copying
+      currentImageData = imageDetails.images;
 
       // Display results
       displayResults(imageDetails.images);
@@ -171,4 +186,93 @@ document.addEventListener('DOMContentLoaded', () => {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
   }
+
+  // Copy button functionality
+  copyBtn.addEventListener('click', async () => {
+    if (!currentImageData || currentImageData.length === 0) {
+      return;
+    }
+
+    try {
+      // Create tabular data (TSV format - tab-separated values)
+      const headers = ['#', 'Source URL', 'Format', 'Dimensions', 'Size'];
+      const rows = [];
+
+      // Add page URL as first row
+      if (currentPageUrl) {
+        rows.push(`Page URL:\t${currentPageUrl}`);
+        rows.push(''); // Empty row separator
+      }
+      
+      rows.push(headers.join('\t'));
+
+      currentImageData.forEach((img, index) => {
+        const sizeText = img.size ? formatBytes(img.size) : 'Unknown';
+        const dimensionsText = img.width && img.height 
+          ? `${img.width} × ${img.height}px` 
+          : 'Unknown';
+        const format = img.format || 'Unknown';
+        
+        rows.push([
+          index + 1,
+          img.src,
+          format,
+          dimensionsText,
+          sizeText
+        ].join('\t'));
+      });
+
+      const tableData = rows.join('\n');
+      
+      // Copy to clipboard
+      await navigator.clipboard.writeText(tableData);
+      
+      // Visual feedback
+      const originalText = copyBtn.innerHTML;
+      copyBtn.innerHTML = '<span class="copy-icon">✓</span> Copied!';
+      copyBtn.classList.add('copied');
+      
+      setTimeout(() => {
+        copyBtn.innerHTML = originalText;
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      // Fallback: try using execCommand for older browsers
+      try {
+        const fallbackRows = [];
+        if (currentPageUrl) {
+          fallbackRows.push(`Page URL:\t${currentPageUrl}`);
+          fallbackRows.push('');
+          fallbackRows.push('#\tSource URL\tFormat\tDimensions\tSize');
+        }
+        fallbackRows.push(...currentImageData.map((img, index) => {
+          const sizeText = img.size ? formatBytes(img.size) : 'Unknown';
+          const dimensionsText = img.width && img.height 
+            ? `${img.width} × ${img.height}px` 
+            : 'Unknown';
+          return `${index + 1}\t${img.src}\t${img.format || 'Unknown'}\t${dimensionsText}\t${sizeText}`;
+        }));
+        
+        const textArea = document.createElement('textarea');
+        textArea.value = fallbackRows.join('\n');
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<span class="copy-icon">✓</span> Copied!';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.innerHTML = originalText;
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      } catch (fallbackErr) {
+        alert('Failed to copy to clipboard. Please try again.');
+      }
+    }
+  });
 });

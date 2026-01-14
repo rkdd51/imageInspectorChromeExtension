@@ -129,10 +129,74 @@ header h1 {
   background: #fafafa;
 }
 
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
 .results-header h2 {
   font-size: 18px;
   color: #333;
   font-weight: 600;
+  margin: 0;
+}
+
+.copy-btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.copy-btn:hover:not(.copied) {
+  background: #5568d3;
+  transform: translateY(-1px);
+}
+
+.copy-btn:active:not(.copied) {
+  transform: translateY(0);
+}
+
+.copy-btn.copied {
+  background: #10b981;
+}
+
+.copy-icon {
+  font-size: 14px;
+}
+
+.page-url-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.url-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  white-space: nowrap;
+}
+
+.page-url {
+  font-size: 12px;
+  color: #667eea;
+  word-break: break-all;
+  font-family: 'Courier New', monospace;
+  flex: 1;
+  line-height: 1.4;
 }
 
 .table-container {

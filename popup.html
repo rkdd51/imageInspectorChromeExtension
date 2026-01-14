@@ -29,7 +29,17 @@
     
     <div id="results" class="results hidden">
       <div class="results-header">
-        <h2>Found <span id="imageCount">0</span> image(s)</h2>
+        <div class="header-top">
+          <h2>Found <span id="imageCount">0</span> image(s)</h2>
+          <button id="copyBtn" class="copy-btn" title="Copy table data">
+            <span class="copy-icon">📋</span>
+            Copy Table
+          </button>
+        </div>
+        <div class="page-url-container">
+          <span class="url-label">Page URL:</span>
+          <span id="pageUrl" class="page-url" title=""></span>
+        </div>
       </div>
       <div class="table-container">
         <table id="imageTable">
